@@ -36,7 +36,6 @@ TARGET_CHAT_ID=100
 
 ##### Получение BOT_TOKEN
 
-Можно использовать уже готового бота @chat_kw_listener_bot с идентификатором `7809276097:AAGeEGSyvNZMSFNSB0hoYdidIPP0LStrF0A`
 Также можно создать нового бота в [@BotFather](https://t.me/botfather) и получить токен.
 В любом случае необходимо убедиться, что бот добавлен в целевой чат.
 
