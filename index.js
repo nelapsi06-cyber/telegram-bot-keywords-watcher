@@ -46,10 +46,10 @@ async function messageHandler(event) {
         if (sender) {
             username = sender.username || 'not available';
             fullName = [sender.firstName, sender.lastName].filter(Boolean).join(' ') || 'Unknown';
-            if (sender.bot) {
+           // if (sender.bot) {
                 // console.log("sender is a bot; ignoring message");
-                return;
-            }
+               // return;
+           // }
         }
 
 
