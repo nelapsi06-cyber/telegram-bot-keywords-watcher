@@ -30,6 +30,10 @@ console.log(`using KEYPHRASES: ${KEYPHRASES}`);
 const bot = new Telegraf(BOT_TOKEN);
 
 async function messageHandler(event) {
+    const chatId = event.message?.chatId?.toString?.();
+    if (chatId && chatId === process.env.TARGET_CHAT_ID?.toString()) {
+        return; // не анализируем мониторинг-чат
+    }
     if (!event.message) return;
     try {
         const message = event.message;
@@ -46,10 +50,10 @@ async function messageHandler(event) {
         if (sender) {
             username = sender.username || 'not available';
             fullName = [sender.firstName, sender.lastName].filter(Boolean).join(' ') || 'Unknown';
-            if (sender.bot) {
+         //   if (sender.bot) {
                 // console.log("sender is a bot; ignoring message");
-                return;
-            }
+           //     return;
+          //  }
         }
 
 
