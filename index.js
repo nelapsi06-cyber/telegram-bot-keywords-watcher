@@ -138,7 +138,7 @@ const getUserInput = (question) => {
         } catch (e) {
             const wait = parseFloodWaitSeconds(e);
             if (wait) {
-                console.log(`FLOOD_WAIT ${wait}s on getDialogs`);
+               // console.log(`FLOOD_WAIT ${wait}s on getDialogs`);
                 await sleep((wait + 1) * 1000);
                 return;
             }
@@ -169,7 +169,6 @@ const getUserInput = (question) => {
             if (!ids.has(k)) state.delete(k);
         }
 
-        console.log(`Dialogs refreshed: ${chatQueue.length}`);
     }
 
     function buildChatAndMessageLinks(chatId, chatUsername, messageId) {
@@ -216,7 +215,7 @@ const getUserInput = (question) => {
             s.lastSeenId = oldest - 1;
             state.set(chat.idStr, s);
 
-            console.log(`INIT (with backlog) ${chat.title}: startFrom=${s.lastSeenId}`);
+           // console.log(`INIT (with backlog) ${chat.title}: startFrom=${s.lastSeenId}`);
             // НЕ return — пусть дальше обработает fresh из этой же пачки
         }
 
@@ -232,7 +231,7 @@ const getUserInput = (question) => {
                 } catch (e) {
                 const wait = parseFloodWaitSeconds(e);
                 if (wait) {
-                    console.log(`FLOOD_WAIT ${wait}s on getMessages (${chat.title})`);
+                   // console.log(`FLOOD_WAIT ${wait}s on getMessages (${chat.title})`);
                     await sleep((wait + 1) * 1000);
                     return; // этот чат пропускаем до следующего тика
                 }
@@ -258,12 +257,12 @@ const getUserInput = (question) => {
                 try {
                     matched = fuzzyMatchRussian(text, KEYPHRASES);
                 } catch (e) {
-                    console.log("WARN fuzzyMatch failed:", e?.message || e, {
-                        chat: chat?.title,
-                        chatId: chat?.idStr,
-                        msgId: m?.id,
-                        textType: typeof m?.message,
-                    });
+                  //  console.log("WARN fuzzyMatch failed:", e?.message || e, {
+                  //      chat: chat?.title,
+                  //      chatId: chat?.idStr,
+                  //      msgId: m?.id,
+                  //      textType: typeof m?.message,
+                  //  });
                     continue; // не валим весь polling из-за одного сообщения
                 }
 
@@ -328,11 +327,11 @@ const getUserInput = (question) => {
                 } catch (e) {
                     const wait = parseFloodWaitSeconds(e);
                     if (wait) {
-                        console.log(`FLOOD_WAIT ${wait}s on sendMessage`);
+                       // console.log(`FLOOD_WAIT ${wait}s on sendMessage`);
                         await sleep((wait + 1) * 1000);
                         return;
                     }
-                    console.log("sendMessage error:", e?.message || e);
+                  //  console.log("sendMessage error:", e?.message || e);
                 }
             }
 
@@ -354,17 +353,17 @@ const getUserInput = (question) => {
         }
 
         if (processed >= MAX_TO_PROCESS_PER_CHAT) {
-            console.log(`poll warn: chat "${s.title}" too many new msgs, capped at ${MAX_TO_PROCESS_PER_CHAT}`);
+       //     console.log(`poll warn: chat "${s.title}" too many new msgs, capped at ${MAX_TO_PROCESS_PER_CHAT}`);
         }
     }
 
     async function startPollingAllChats({ client, KEYPHRASES, bot, TARGET_CHAT_ID }) {
         await refreshDialogs(client);
-        console.log("Starting first poll tick...");
+       // console.log("Starting first poll tick...");
         for (let i = 0; i < CHATS_PER_TICK && chatQueue.length; i++) {
             const chat = chatQueue[queueIndex % chatQueue.length];
             queueIndex++;
-            console.log(`TICK: polling ${chat.title} (${chat.idStr}) lastSeen=${state.get(chat.idStr)?.lastSeenId || 0}`);
+           // console.log(`TICK: polling ${chat.title} (${chat.idStr}) lastSeen=${state.get(chat.idStr)?.lastSeenId || 0}`);
             await pollOneChat(client, chat, KEYPHRASES, bot, TARGET_CHAT_ID);
         }
         setInterval(() => refreshDialogs(client).catch(console.error), DIALOG_REFRESH_MS);
@@ -378,11 +377,10 @@ const getUserInput = (question) => {
                 queueIndex++;
 
                 try {
-                    console.log(`TICK: polling ${chat.title} (${chat.idStr}) lastSeen=${state.get(chat.idStr)?.lastSeenId || 0}`);
+                 //   console.log(`TICK: polling ${chat.title} (${chat.idStr}) lastSeen=${state.get(chat.idStr)?.lastSeenId || 0}`);
                     await pollOneChat(client, chat, KEYPHRASES, bot, TARGET_CHAT_ID);
                 } catch (e) {
                     const msg = e?.message || String(e);
-                    console.log("poll error:", chat?.title, msg);
 
                     // Если Telegram вернул FloodWait (иногда в тексте “FLOOD_WAIT_X”)
                     // можно сделать паузу/уменьшить частоту.
@@ -435,7 +433,7 @@ const getUserInput = (question) => {
                 .catch((e) => console.error("Telegraf launch failed:", e));
 
         } catch (e) {
-            console.error("FATAL in main:", e);
+           // console.error("FATAL in main:", e);
             process.exit(1);
         }
     })();
