@@ -41,10 +41,10 @@ const client = new TelegramClient(session, API_ID, API_HASH, {
 // Runtime settings
 // =========================
 const POLL_INTERVAL_MS = 30_000;          // общий цикл polling
-const DIALOG_REFRESH_MS = 10 * 60_000;    // обновление списка чатов
-const MESSAGES_LIMIT = 50;                // сколько последних сообщений читать за страницу
+const DIALOG_REFRESH_MS = 3 * 60 * 60_000;    // обновление списка чатов
+const MESSAGES_LIMIT = 30;                // сколько последних сообщений читать за страницу
 const CHATS_PER_TICK = 2;                 // сколько чатов проверять за тик
-const MAX_TO_PROCESS_PER_CHAT = 200;      // защита от очень шумных чатов
+const MAX_TO_PROCESS_PER_CHAT = 100;      // защита от очень шумных чатов
 const MEMORY_LOG_INTERVAL_MS = 10 * 60_000;
 const STATE_SAVE_INTERVAL_MS = 10 * 60 * 1000; // раз в 10 минут
 
@@ -241,7 +241,7 @@ async function refreshDialogs() {
     }
 
     console.log(`Dialogs refreshed: ${chatQueue.length}`);
-    saveStateToFile(state);
+
 }
 
 async function sendMatchNotification(chat, matched, msgObj, shortText) {
@@ -251,17 +251,17 @@ async function sendMatchNotification(chat, matched, msgObj, shortText) {
     const chatId = chat.idStr;
 
     // sender
-    let username = "not available";
-    let fullName = "Unknown";
+    let username = "hidden";
+    let fullName = "hidden";
 
-    try {
-        const sender = await msgObj.getSender().catch(() => null);
-        if (sender) {
-            username = sender.username || "not available";
-            fullName =
-                [sender.firstName, sender.lastName].filter(Boolean).join(" ") || "Unknown";
-        }
-    } catch (_) {}
+    ///try {
+   //     const sender = await msgObj.getSender().catch(() => null);
+    //    if (sender) {
+    //        username = sender.username || "not available";
+    //        fullName =
+   //             [sender.firstName, sender.lastName].filter(Boolean).join(" ") || "Unknown";
+  //      }
+  //  } catch (_) {}
 
     const { chatLink, messageLink } = buildChatAndMessageLinks(
         chatId,
@@ -373,12 +373,12 @@ async function pollOneChat(chat) {
             try {
                 matched = fuzzyMatchRussian(text, KEYPHRASES);
             } catch (e) {
-                console.log("WARN fuzzyMatch failed:", e?.message || e, {
-                    chat: chat?.title,
-                    chatId: chat?.idStr,
-                    msgId: m?.id,
-                    textType: typeof m?.message,
-                });
+             //   console.log("WARN fuzzyMatch failed:", e?.message || e, {
+             //       chat: chat?.title,
+             //       chatId: chat?.idStr,
+             //       msgId: m?.id,
+            //        textType: typeof m?.message,
+            //    });
                 continue;
             }
 
