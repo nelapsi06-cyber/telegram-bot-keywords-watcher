@@ -324,6 +324,8 @@ async function pollOneChat(chat) {
             state.set(chat.idStr, s);
 
             console.log(`INIT ${chat.title}: startFrom=${s.lastSeenId}`);
+            return;
+
         } catch (e) {
             const wait = parseFloodWaitSeconds(e);
             if (wait) {
@@ -487,6 +489,8 @@ process.on("beforeExit", () => {
     saveStateToFile(state);
 });
 
+
+
 (async () => {
     try {
         await client.connect();
@@ -505,6 +509,18 @@ process.on("beforeExit", () => {
 
         console.log("Userbot started and polling init...");
         await startPollingAllChats();
+
+
+        const RESTART_INTERVAL = 24 * 60 * 60 * 1000;
+
+        setTimeout(() => {
+            console.log("Restarting process to clear memory...");
+            saveStateToFile(state);
+            process.exit(0);
+        }, RESTART_INTERVAL);
+
+
+
     } catch (e) {
         console.error("FATAL in main:", e);
         process.exit(1);
